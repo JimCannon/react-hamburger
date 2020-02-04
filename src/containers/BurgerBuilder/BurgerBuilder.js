@@ -4,6 +4,7 @@ import ReactAux from '../../hoc/ReactAux/ReactAux'
 import Burger from '../../components/Burger/Burger'
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/Ordersummary/OrderSummary'
+import axios from '../../axios-order'
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -78,7 +79,31 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinueHandler = () => {
-    alert('You continued!');
+    //alert('You continued!');
+    //must use ".json" while using firebase as backend
+    const order = {
+      ingredients: this.state.ingredients,
+      //always calculate the totalPrice on the server before sending it
+      //the user may manipulate the totalPrice.. dont use this setup on a real app
+      price: this.state.totalPrice,
+      customer: {
+        name: 'Django Unchained',
+        address: {
+          street: 'Belly of the Beast 1',
+          zipCode: '666',
+          country: 'USA'
+        },
+        email: 'test@test.com'
+      },
+      deliveryMethod: 'speedOfLight'
+    }
+    axios.post('/orders.json', order)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   render() {
